@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import nltk
 from nltk.corpus import stopwords
 import seaborn as sns
+from collections import Counter
 
 
 # ------------------------------
@@ -135,4 +136,35 @@ plt.title("Sentiment Distribution of Tweets")
 plt.xlabel("Sentiment")
 plt.ylabel("Number of Tweets")
 
+plt.show()
+
+# ------------------------------
+# Step 9: Top 20 Words Count 
+# ------------------------------
+
+# Combine all cleaned tweets into one string and split into words
+all_words = " ".join(df["clean_text"]).split()
+
+# Count frequency of each word
+word_counts = Counter(all_words)
+
+# Get top 20 most common words
+common_words = word_counts.most_common(20)
+
+# Split into two lists for plotting
+words = [word[0] for word in common_words]
+counts = [word[1] for word in common_words]
+
+# Plot bar chart
+plt.figure(figsize=(10,5))
+sns.barplot(x=counts, y=words)
+
+plt.title("Top 20 Most Common Words in Tweets")
+plt.xlabel("Frequency")
+plt.ylabel("Words")
+
+# Save the figure (IMPORTANT for GitHub)
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\top_words.png")
+
+# Show the plot
 plt.show()
