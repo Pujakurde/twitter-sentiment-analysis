@@ -68,6 +68,11 @@ Download the dataset from Kaggle and place it inside a `dataset/` folder.
 * Word Cloud of most frequent words
 * Sentiment distribution chart
 
+### 6️⃣ Word Frequency Analysis
+
+* Extract top 20 most common words
+* Visualize using bar chart
+
 ---
 
 ## 📊 Visualizations
@@ -84,6 +89,11 @@ Displays the number of positive and negative tweets.
 
 ![Sentiment Chart](visuals/sentiment_chart.png)
 
+### Top 20 Most Common Words
+
+This visualization shows the most frequently occurring words in tweets after preprocessing and stopword removal.
+
+![Top Words](visuals/top_words.png)
 ---
 
 ## 📁 Project Structure
@@ -96,7 +106,8 @@ twitter-sentiment-analysis
 │
 ├── visuals
 │   ├── wordcloud.png
-│   └── sentiment_chart.png
+│   ├── sentiment_chart.png
+│   └── top_words.png
 │
 ├── requirements.txt
 ├── README.md
@@ -123,9 +134,10 @@ python code/code.py
 
 ## 📈 Insights
 
-* Tweets contain strong emotional expressions such as *love*, *happy*, and *sad*.
-* Negative tweets often include words related to frustration or disappointment.
-* Positive tweets frequently contain words related to excitement and happiness.
+* Common words in tweets include **love, good, day, happy, and miss**
+* Tweets reflect strong emotional expressions and opinions
+* Both positive and negative sentiments are well represented in the dataset
+* Word frequency analysis helps identify common patterns in user behavior
 
 ---
 
