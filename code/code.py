@@ -44,6 +44,8 @@ df = pd.read_csv(
 
 df = df[["sentiment", "text"]]
 
+# Convert sentiment labels
+df["sentiment"] = df["sentiment"].replace({0: "Negative", 4: "Positive"})
 
 # ------------------------------
 # Step 4: Check dataset information
@@ -67,14 +69,13 @@ print(df["sentiment"].value_counts())
 # ------------------------------
 # Remove URLs, mentions, hashtags, punctuation
 # and convert text to lowercase.
-
 def clean_tweet(text):
-    text = re.sub(r"http\S+", "", text)      # remove URLs
-    text = re.sub(r"@\w+", "", text)         # remove mentions
-    text = re.sub(r"#\w+", "", text)         # remove hashtags
-    text = re.sub(r"[^A-Za-z\s]", "", text)  # remove punctuation
-    text = text.lower()                     # convert to lowercase
-    return text
+    text = re.sub(r"http\S+", "", text) # remove URLs
+    text = re.sub(r"@\w+", "", text) # remove mentions
+    text = re.sub(r"#\w+", "", text)# remove hashtags
+    text = re.sub(r"[^A-Za-z\s]", "", text)# remove punctuation
+    text = re.sub(r"\s+", " ", text)  # remove extra spaces
+    return text.lower().strip()
 
 
 # Apply cleaning function
@@ -86,21 +87,23 @@ df["clean_text"] = df["text"].apply(clean_tweet)
 # ------------------------------
 # Stopwords are common words like:
 # the, is, and, to, etc.
-
 nltk.download('stopwords')
 
 stop_words = set(stopwords.words('english'))
 
+# Add custom stopwords (VERY IMPORTANT)
+stop_words.update([
+    "im", "amp", "u", "get", "go", "like",
+    "one", "dont", "cant", "thats", "youre"
+])
 
 def remove_stopwords(text):
     words = text.split()
-    filtered_words = [word for word in words if word not in stop_words]
-    return " ".join(filtered_words)
+    return " ".join([word for word in words if word not in stop_words])
 
-
-# Apply stopword removal
 df["clean_text"] = df["clean_text"].apply(remove_stopwords)
-
+# Remove empty tweets after cleaning
+df = df[df["clean_text"].str.strip() != ""]
 
 # ------------------------------
 # Step 7: Create WordCloud
@@ -111,16 +114,21 @@ df["clean_text"] = df["clean_text"].apply(remove_stopwords)
 text_data = " ".join(df["clean_text"])
 
 wordcloud = WordCloud(
-    width=800,
-    height=400,
-    background_color="white"
+    width=1200,
+    height=600,
+    background_color="white",
+    colormap="coolwarm",
+    max_words=100,
+    collocations=False
 ).generate(text_data)
-
 
 plt.figure(figsize=(10,5))
 plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis("off")
 plt.title("Most Common Words in Tweets")
+
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\wordcloud.png")
+
 plt.show()
 
 
@@ -129,18 +137,19 @@ plt.show()
 # ------------------------------
 # Visualize how many tweets are positive
 # and negative.
+plt.figure(figsize=(6,4))
 
-sns.countplot(x="sentiment", data=df)
+sns.countplot(x="sentiment", data=df, palette="Set2")
 
-plt.title("Sentiment Distribution of Tweets")
+plt.title("Sentiment Distribution")
 plt.xlabel("Sentiment")
-plt.ylabel("Number of Tweets")
+plt.ylabel("Count")
 
+plt.tight_layout()
+
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\sentiment_chart.png")
 plt.show()
 
-# ------------------------------
-# Step 9: Top 20 Words Count 
-# ------------------------------
 
 # Combine all cleaned tweets into one string and split into words
 all_words = " ".join(df["clean_text"]).split()
@@ -156,15 +165,97 @@ words = [word[0] for word in common_words]
 counts = [word[1] for word in common_words]
 
 # Plot bar chart
-plt.figure(figsize=(10,5))
-sns.barplot(x=counts, y=words)
+plt.figure(figsize=(12,6))
 
-plt.title("Top 20 Most Common Words in Tweets")
+sns.barplot(
+    x=counts,
+    y=words,
+    palette="viridis"
+)
+
+plt.title("Top 20 Most Common Words", fontsize=14)
 plt.xlabel("Frequency")
 plt.ylabel("Words")
 
-# Save the figure (IMPORTANT for GitHub)
+plt.tight_layout()
+
+# Save the figure
 plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\top_words.png")
 
 # Show the plot
 plt.show()
+
+# ------------------------------
+# Step 8: Tweet Length Analysis
+# ------------------------------
+df["tweet_length"] = df["clean_text"].apply(lambda x: len(x.split()))
+plt.figure(figsize=(12,6))
+
+sns.histplot(
+    data=df,
+    x="tweet_length",
+    hue="sentiment",
+    bins=40,
+    kde=True
+)
+
+plt.title("Tweet Length Distribution", fontsize=14)
+plt.xlabel("Tweet Length")
+plt.ylabel("Frequency")
+
+plt.tight_layout()
+
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\tweet_length.png")
+plt.show()
+
+# ------------------------------
+# Step 9: Positive vs Negative WordCloud
+# ------------------------------
+
+positive_text = " ".join(df[df["sentiment"]=="Positive"]["clean_text"])
+negative_text = " ".join(df[df["sentiment"]=="Negative"]["clean_text"])
+
+# Positive WordCloud
+plt.figure(figsize=(10,5))
+wordcloud_pos = WordCloud(
+    width=1200,
+    height=600,
+    background_color="white",
+    colormap="Greens",
+    max_words=100,
+    collocations=False
+).generate(positive_text)
+
+plt.imshow(wordcloud_pos, interpolation="bilinear")
+plt.axis("off")
+plt.title("Positive Tweets Word Cloud")
+
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\positive_wordcloud.png")
+plt.show()
+
+
+# Negative WordCloud
+plt.figure(figsize=(10,5))
+wordcloud_neg = WordCloud(
+    width=1200,
+    height=600,
+    background_color="white",
+    colormap="Reds",
+    max_words=100,
+    collocations=False
+).generate(negative_text)
+
+plt.imshow(wordcloud_neg, interpolation="bilinear")
+plt.axis("off")
+plt.title("Negative Tweets Word Cloud")
+
+plt.savefig("D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\visuals\\negative_wordcloud.png")
+plt.show()
+
+# ------------------------------
+# Step 10: Sentiment Percentage
+# ------------------------------
+sentiment_percent = df["sentiment"].value_counts(normalize=True) * 100
+print("\nSentiment Percentage:")
+for sentiment, value in sentiment_percent.items():
+    print(f"{sentiment}: {value:.2f}%")

@@ -1,4 +1,4 @@
-# Twitter Sentiment Analysis using NLP
+# 🚀 Twitter Sentiment Analysis using NLP
 
 ## 📌 Project Overview
 
@@ -23,19 +23,18 @@ The analysis explores patterns in tweets and visualizes sentiment trends using P
 
 Dataset used: **Sentiment140 Twitter Dataset**
 
-Source:
-https://www.kaggle.com/datasets/kazanova/sentiment140
+🔗 https://www.kaggle.com/datasets/kazanova/sentiment140
 
-The dataset contains **1.6 million tweets labeled with sentiment**.
+* Contains **1.6 million tweets labeled with sentiment**
 
-Sentiment labels:
+**Sentiment labels:**
 
 * **0 → Negative**
 * **4 → Positive**
 
-⚠️ Note:
-The dataset is **not included in this repository** due to GitHub's file size limit.
-Download the dataset from Kaggle and place it inside a `dataset/` folder.
+⚠️ **Note:**
+The dataset is **not included** in this repository due to GitHub file size limits.
+Download it from Kaggle and place it inside a `dataset/` folder.
 
 ---
 
@@ -43,7 +42,7 @@ Download the dataset from Kaggle and place it inside a `dataset/` folder.
 
 ### 1️⃣ Data Loading
 
-* Load Twitter dataset using Pandas
+* Load dataset using Pandas
 * Select relevant columns
 
 ### 2️⃣ Data Cleaning
@@ -56,22 +55,21 @@ Download the dataset from Kaggle and place it inside a `dataset/` folder.
 
 ### 3️⃣ Stopword Removal
 
-* Remove common words such as:
-  *the, is, and, to*
+* Remove common words (the, is, and, to)
+* Add custom stopwords (im, dont, cant, etc.)
 
 ### 4️⃣ Text Processing
 
-* Create cleaned tweet text for analysis
+* Create cleaned tweet text
+* Remove empty tweets
 
 ### 5️⃣ Data Visualization
 
-* Word Cloud of most frequent words
-* Sentiment distribution chart
-
-### 6️⃣ Word Frequency Analysis
-
-* Extract top 20 most common words
-* Visualize using bar chart
+* Word Cloud
+* Sentiment distribution
+* Top 20 most common words
+* Tweet length distribution
+* Positive vs Negative word clouds
 
 ---
 
@@ -79,21 +77,39 @@ Download the dataset from Kaggle and place it inside a `dataset/` folder.
 
 ### Word Cloud
 
-Shows the most common words appearing in tweets.
-
 ![WordCloud](visuals/wordcloud.png)
 
 ### Sentiment Distribution
-
-Displays the number of positive and negative tweets.
 
 ![Sentiment Chart](visuals/sentiment_chart.png)
 
 ### Top 20 Most Common Words
 
-This visualization shows the most frequently occurring words in tweets after preprocessing and stopword removal.
-
 ![Top Words](visuals/top_words.png)
+
+### Tweet Length Distribution
+
+![Tweet Length](visuals/tweet_length.png)
+
+---
+
+## 📈 Key Insights
+
+* The dataset shows a **balanced distribution** of positive and negative tweets (~50% each)
+
+* Frequently used words include:
+
+  * *love, good, happy* → positive sentiment
+  * *bad, sad, hate* → negative sentiment
+
+* Most tweets are **short (under 15 words)**
+
+* Positive tweets express **happiness, excitement, and appreciation**
+
+* Negative tweets express **frustration, dissatisfaction, and complaints**
+
+* Text preprocessing significantly improves analysis by removing noise
+
 ---
 
 ## 📁 Project Structure
@@ -107,8 +123,10 @@ twitter-sentiment-analysis
 ├── visuals
 │   ├── wordcloud.png
 │   ├── sentiment_chart.png
-│   └── top_words.png
+│   ├── top_words.png
+│   └── tweet_length.png
 │
+├── dataset (not included)
 ├── requirements.txt
 ├── README.md
 └── .gitignore
@@ -118,13 +136,13 @@ twitter-sentiment-analysis
 
 ## 🚀 How to Run the Project
 
-Install dependencies:
+### Install dependencies
 
 ```
 pip install -r requirements.txt
 ```
 
-Run the script:
+### Run the project
 
 ```
 python code/code.py
@@ -132,18 +150,9 @@ python code/code.py
 
 ---
 
-## 📈 Insights
-
-* Common words in tweets include **love, good, day, happy, and miss**
-* Tweets reflect strong emotional expressions and opinions
-* Both positive and negative sentiments are well represented in the dataset
-* Word frequency analysis helps identify common patterns in user behavior
-
----
-
 ## 👩‍💻 Author
 
 **Puja Kurde**
-Data Science Student
+🎓 Data Science Student
 
-GitHub: https://github.com/Pujakurde
+🔗 GitHub: https://github.com/Pujakurde
