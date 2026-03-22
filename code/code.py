@@ -12,7 +12,11 @@ import nltk
 from nltk.corpus import stopwords
 import seaborn as sns
 from collections import Counter
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import joblib
 
 # ------------------------------
 # Step 1: Define column names
@@ -31,9 +35,11 @@ columns = ["sentiment", "id", "date", "query", "user", "text"]
 df = pd.read_csv(
     r"D:\Folder D\DA\Tweet_Sentiment_Analysis\dataset\training.csv",
     encoding="latin-1",
-    names=columns,
-    nrows=100000
+    names=columns
 )
+
+# Random sampling to balance dataset
+df = df.sample(100000, random_state=42)
 
 
 # ------------------------------
@@ -139,7 +145,7 @@ plt.show()
 # and negative.
 plt.figure(figsize=(6,4))
 
-sns.countplot(x="sentiment", data=df, palette="Set2")
+sns.countplot(x="sentiment", data=df, hue="sentiment", palette="Set2", legend=False)
 
 plt.title("Sentiment Distribution")
 plt.xlabel("Sentiment")
@@ -259,3 +265,60 @@ sentiment_percent = df["sentiment"].value_counts(normalize=True) * 100
 print("\nSentiment Percentage:")
 for sentiment, value in sentiment_percent.items():
     print(f"{sentiment}: {value:.2f}%")
+
+
+# ------------------------------
+# Step 11: Convert text to numerical features
+# ------------------------------
+
+# Convert text to numerical features
+vectorizer = TfidfVectorizer(max_features=5000)
+X = vectorizer.fit_transform(df["clean_text"])
+
+# Target variable
+y = df["sentiment"]
+# ------------------------------
+# Step 12: Prepare training and testing data
+# ------------------------------
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# ------------------------------
+# Step 13: Train the model
+# ------------------------------
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# ------------------------------
+# Step 14: Evaluate the model
+# ------------------------------
+y_pred = model.predict(X_test)
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred)) 
+
+# ------------------------------
+# Step 15: Save the model
+# ------------------------------
+
+joblib.dump(model, "D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\code\\sentiment_model.pkl")
+joblib.dump(vectorizer, "D:\\Folder D\\DA\\Tweet_Sentiment_Analysis\\code\\vectorizer.pkl")
+
+# ------------------------------
+# Step 16: Prediction Function
+# ------------------------------
+
+def predict_sentiment(text):
+    cleaned = remove_stopwords(clean_tweet(text))
+    vector = vectorizer.transform([cleaned])
+    prediction = model.predict(vector)
+    return prediction[0]
+
+
+# Test predictions
+print("\nSample Predictions:")
+print("Text: I love this product →", predict_sentiment("I love this product"))
+print("Text: This is terrible →", predict_sentiment("This is terrible"))
